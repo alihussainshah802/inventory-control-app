@@ -25,5 +25,11 @@ const stop = () => {
 
 process.on('SIGINT', stop)
 process.on('SIGTERM', stop)
-for (const child of children)
+for (const child of children) {
+  child.on('error', (error) => {
+    console.error(`Failed to start "${child.spawnfile}": ${error.message}`)
+    stop()
+    process.exit(1)
+  })
   child.on('exit', (code) => code && process.exit(code))
+}

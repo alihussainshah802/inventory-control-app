@@ -1,0 +1,22 @@
+{
+  "name": "Depot",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" }
+  },
+  "remoteEnv": {
+    "PATH": "${containerEnv:HOME}/.local/bin:${containerEnv:PATH}"
+  },
+  "postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh && corepack enable && corepack prepare pnpm@11.21.0 --activate && pnpm install",
+  "forwardPorts": [5173, 3100],
+  "portsAttributes": {
+    "5173": {
+      "label": "Depot (client)",
+      "onAutoForward": "openPreview"
+    },
+    "3100": {
+      "label": "Depot API",
+      "onAutoForward": "silent"
+    }
+  }
+}
