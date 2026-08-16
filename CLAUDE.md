@@ -24,11 +24,7 @@ uv run ty check api
 
 Client dev server: `http://localhost:5173`. API docs (Swagger UI): `http://localhost:3100/docs` (also `/redoc`, `/openapi.json`). Vite's dev proxy forwards `/api/*` and `/health` to `:3100` (see `vite.config.ts`), so the browser only ever talks to `5173` — don't hardcode `localhost:3100` in client code.
 
-Package managers are **pnpm** (not npm/yarn) and **uv** (not pip/poetry) — `uv run <cmd>` auto-installs the pinned Python version and deps from `pyproject.toml`/`uv.lock` on first use. `uv run` is invoked with `--system-certs` in `scripts/dev.mjs` and should be kept when calling `uv` manually **on the Windows host**.
-
-The cause is not the network: AVG Antivirus runs with HTTPS scanning enabled and MITMs every TLS connection, re-signing it with a locally generated root (`CN = AVG Web/Mail Shield Root`). Windows trusts that root, but `uv` ships its own CA bundle and doesn't, so it fails verification against PyPI. `--system-certs` tells `uv` to read the Windows trust store instead.
-
-**This does not apply inside `.devcontainer/`** — that image installs the AVG root into the system trust store and sets `SSL_CERT_FILE`, so `uv` works there without `--system-certs`. Anything else with a private CA bundle (Node, Docker builds, WSL) hits the same wall on the host and needs the same treatment.
+Package managers are **pnpm** (not npm/yarn) and **uv** (not pip/poetry) — `uv run <cmd>` auto-installs the pinned Python version and deps from `pyproject.toml`/`uv.lock` on first use. `uv run` is invoked with `--system-certs` in `scripts/dev.mjs` and should be kept when calling `uv` manually on this machine — without it, `uv` fails TLS verification against PyPI on this network.
 
 ## Architecture
 
